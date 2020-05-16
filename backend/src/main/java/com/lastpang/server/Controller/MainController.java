@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,8 @@ import java.util.*;
 @RestController
 public class MainController {
     private Logger logger = LoggerFactory.getLogger(ApplicationRunner.class);
-
+    @Value("${static.resource.location}")
+    private String menuImgLocation;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -99,11 +101,10 @@ public class MainController {
                                       @RequestParam("menuname") String menuname, @RequestParam(value = "price", required = false) Integer price,
                                       @RequestParam(value="desc", required = false) String desc, @RequestParam(value = "options", required = false) String options) {
         UUID uid = UUID.randomUUID();
-        File targetFile = new File("src/main/resources/menuimgs/"+uid.toString());
+        File targetFile = new File(menuImgLocation+uid.toString());
         Menu menu = new Menu();
         System.out.println("actual path is: " + targetFile.getAbsolutePath());
         try {
-            System.out.println( multipartFile.getInputStream().getClass());
             InputStream fileStream = multipartFile.getInputStream();
             FileUtils.copyInputStreamToFile(fileStream, targetFile);
             String filename = multipartFile.getOriginalFilename();
