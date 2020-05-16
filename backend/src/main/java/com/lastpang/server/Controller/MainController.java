@@ -101,7 +101,7 @@ public class MainController {
         UUID uid = UUID.randomUUID();
         File targetFile = new File("src/main/resources/menuimgs/"+uid.toString());
         Menu menu = new Menu();
-
+        System.out.println("actual path is: " + targetFile.getAbsolutePath());
         try {
             System.out.println( multipartFile.getInputStream().getClass());
             InputStream fileStream = multipartFile.getInputStream();
