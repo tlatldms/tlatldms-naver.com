@@ -1,8 +1,10 @@
 package com.lastpang.server.Controller;
 
 import com.lastpang.server.Domain.Member;
+import com.lastpang.server.Domain.Menu;
 import com.lastpang.server.Domain.Store;
 import com.lastpang.server.Repository.MemberRepository;
+import com.lastpang.server.Repository.MenuRepository;
 import com.lastpang.server.Repository.StoreRepository;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -28,6 +30,8 @@ public class MainController {
     private MemberRepository memberRepository;
     @Autowired
     private StoreRepository storeRepository;
+    @Autowired
+    private MenuRepository menuRepository;
 
     @PostMapping(path="/auth/register")
     public Map<String, Object> addNewUser (@RequestBody Member member) {
@@ -92,15 +96,26 @@ public class MainController {
     }
 
     @PostMapping(value = "/menu/upload")
-    public Map<String, Object> upload(@RequestParam("username") String username, @RequestParam("file") MultipartFile multipartFile) {
+    public Map<String, Object> upload(@RequestParam("storename") String storename, @RequestParam("file") MultipartFile multipartFile,
+                                      @RequestParam("menuname") String menuname, @RequestParam(value = "price", required = false) Integer price,
+                                      @RequestParam(value="desc", required = false) String desc, @RequestParam(value = "options", required = false) String options) {
         UUID uid = UUID.randomUUID();
-        File targetFile = new File("src/main/resources/static/menu_imgs/"+uid.toString());
+        File targetFile = new File("src/main/resources/menuimgs/"+uid.toString());
+        Menu menu = new Menu();
 
         try {
             System.out.println( multipartFile.getInputStream().getClass());
             InputStream fileStream = multipartFile.getInputStream();
             FileUtils.copyInputStreamToFile(fileStream, targetFile);
             String filename = multipartFile.getOriginalFilename();
+            menu.setMenuImgUuid(uid.toString());
+            menu.setPrice(price);
+            menu.setDescription(desc);
+            menu.setStore(storeRepository.findStoreByStoreName(storename));
+            menu.setOptions(options);
+            menu.setMenuName(menuname);
+            menuRepository.save(menu);
+
         } catch (IOException e) {
             FileUtils.deleteQuietly(targetFile);
             e.printStackTrace();

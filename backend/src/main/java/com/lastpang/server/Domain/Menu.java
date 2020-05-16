@@ -2,10 +2,7 @@ package com.lastpang.server.Domain;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -13,10 +10,15 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long menuId;
+
+    @ManyToOne
+    @JoinColumn(name = "storeId", nullable = false, updatable = false)
+    private Store store;
+
     private String menuName;
-    private String menuImgLink;
+    private String menuImgUuid;
     private Integer price;
-    private String desc;
+    private String description;
     private String options;
 
 }
