@@ -1,25 +1,26 @@
 package com.lastpang.server.Controller;
 
-import com.google.gson.Gson;
 import com.lastpang.server.Domain.Member;
 import com.lastpang.server.Domain.Store;
 import com.lastpang.server.Repository.MemberRepository;
 import com.lastpang.server.Repository.StoreRepository;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 @RestController
+@CrossOrigin
 public class MainController {
     private Logger logger = LoggerFactory.getLogger(ApplicationRunner.class);
 
@@ -76,14 +77,7 @@ public class MainController {
         map.put("errorCode", 10);
         return map;
     }
-/*
-    public Map<String, Object> updateStore(@RequestBody Map<String, Object> m) {
-        Store st = storeRepository.findStoreByStoreId((Long)m.get("store_id"));
-        st.setLongitude((Float)m.get("longitude"));
-        st.setLongitude((Float)m.get("latitude"));
 
-    }
-*/
     @PostMapping(path = "/auth/login")
     public Map<String, Object> login(@RequestBody Map<String, String> m) throws Exception {
         Map<String, Object> map = new HashMap<>();
@@ -95,5 +89,25 @@ public class MainController {
         memberRepository.save(member);
         map.put("errorCode", 10);
         return map;
+    }
+
+    @PostMapping(value = "/menu/upload")
+    public Map<String, Object> upload(@RequestParam("username") String username, @RequestParam("file") MultipartFile multipartFile) {
+        UUID uid = UUID.randomUUID();
+        File targetFile = new File("src/main/resources/static/menu_imgs/"+uid.toString());
+
+        try {
+            System.out.println( multipartFile.getInputStream().getClass());
+            InputStream fileStream = multipartFile.getInputStream();
+            FileUtils.copyInputStreamToFile(fileStream, targetFile);
+            String filename = multipartFile.getOriginalFilename();
+        } catch (IOException e) {
+            FileUtils.deleteQuietly(targetFile);
+            e.printStackTrace();
+        }
+
+        Map<String, Object> m = new HashMap<>();
+        m.put("errorCode", 10);
+        return m;
     }
 }
