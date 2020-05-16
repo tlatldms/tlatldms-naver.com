@@ -12,7 +12,8 @@ import java.util.Date;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long userId;
+
 
     @Column(nullable=false, unique=true, length=20)
     private String username;
@@ -25,16 +26,13 @@ public class Member {
     private String password;
 
     private Short hostFlag;
-    private String licenseNum;
-    private float latitude;
-    private float longtitue;
-    private String storeName;
-    private String posName;
+
 
     @CreationTimestamp
     private Date reg_dt;
 
     @UpdateTimestamp
     private Date updated_dt;
+    private Date access_dt;
 
 }
