@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 @RestController
-@CrossOrigin
 public class MainController {
     private Logger logger = LoggerFactory.getLogger(ApplicationRunner.class);
 
