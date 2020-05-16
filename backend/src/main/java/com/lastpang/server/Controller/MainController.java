@@ -83,6 +83,25 @@ public class MainController {
         return map;
     }
 
+    @GetMapping(path="/stores/{username}")
+    public Map<String, Object> getStoresOfUser(@PathVariable String username) {
+        Map<String, Object> map = new HashMap<>();
+        List<Store> sl = storeRepository.findStoresByMember_Username(username);
+        map.put("errorCode", 10);
+        map.put("stores", sl);
+        return map;
+    }
+
+
+    @GetMapping(path="/store/{storeId}")
+    public Map<String, Object> getStore(@PathVariable Long storeId) {
+        Map<String, Object> map = new HashMap<>();
+        Store s = storeRepository.findStoreByStoreId(storeId);
+        map.put("errorCode", 10);
+        map.put("store", s);
+        return map;
+    }
+
     @PostMapping(path = "/auth/login")
     public Map<String, Object> login(@RequestBody Map<String, String> m) throws Exception {
         Map<String, Object> map = new HashMap<>();
@@ -125,4 +144,24 @@ public class MainController {
         m.put("errorCode", 10);
         return m;
     }
+
+    @GetMapping(value="/menus/{storename}")
+    public Map<String, Object> getMenusOfStore(@PathVariable String storename) {
+        Map<String, Object> map = new HashMap<>();
+        List<Menu> ml = menuRepository.findMenusByStore_StoreName(storename);
+        map.put("errorCode", 10);
+        map.put("menus", ml);
+        return map;
+    }
+
+
+    @GetMapping(path="/menu/{menuId}")
+    public Map<String, Object> getMenu(@PathVariable Long menuId) {
+        Map<String, Object> map = new HashMap<>();
+        Menu m = menuRepository.findByMenuId(menuId);
+        map.put("errorCode", 10);
+        map.put("menu", m);
+        return map;
+    }
+
 }
