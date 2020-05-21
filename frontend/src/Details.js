@@ -1,7 +1,7 @@
 import React from 'react';
 import ClientOrder from './page/client/Order';
 import {Route} from 'react-router-dom';
-import Login from './page/common/Login';
+import Login from './page/client/Login';
 
 const Details = () => {
     return (
@@ -14,7 +14,7 @@ const Details = () => {
     path = '/login'
     component = {Login}
     />
-    < /div>
+    </div>
 )
     ;
 }
