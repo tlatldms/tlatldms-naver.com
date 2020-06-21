@@ -2,10 +2,13 @@ package com.lastpang.server.Controller;
 
 import com.lastpang.server.Domain.Member;
 import com.lastpang.server.Domain.Menu;
+import com.lastpang.server.Domain.Ordering;
 import com.lastpang.server.Domain.Store;
 import com.lastpang.server.Repository.MemberRepository;
 import com.lastpang.server.Repository.MenuRepository;
+import com.lastpang.server.Repository.OrderRepository;
 import com.lastpang.server.Repository.StoreRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +27,8 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.*;
 
+@EnableScheduling
+@RequiredArgsConstructor
 @RestController
 public class MainController {
     private Logger logger = LoggerFactory.getLogger(ApplicationRunner.class);
@@ -33,6 +40,11 @@ public class MainController {
     private StoreRepository storeRepository;
     @Autowired
     private MenuRepository menuRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+
+
+    private final SimpMessageSendingOperations messagingTemplate;
 
     @PostMapping(path="/auth/register")
     public Map<String, Object> addNewUser (@RequestBody Member member) {
@@ -94,13 +106,14 @@ public class MainController {
 
 
     @GetMapping(path="/store/{storeId}")
-    public Map<String, Object> getStore(@PathVariable Long storeId) {
+    public Map<String, Object> getStore(@PathVariable Integer storeId) {
         Map<String, Object> map = new HashMap<>();
         Store s = storeRepository.findStoreByStoreId(storeId);
         map.put("errorCode", 10);
         map.put("store", s);
         return map;
     }
+
 
     @PostMapping(path = "/auth/login")
     public Map<String, Object> login(@RequestBody Map<String, String> m) throws Exception {
@@ -114,6 +127,43 @@ public class MainController {
         map.put("errorCode", 10);
         return map;
     }
+
+
+    //ORDER
+    @PostMapping(path = "/order/new")
+    public void newOrder(@RequestBody Map<String, Object> m) throws Exception {
+        Ordering order = new Ordering();
+        order.setOrderStatus(0);
+        order.setStore(storeRepository.findStoreByStoreId((Integer)m.get("storeId")));
+        order.setOrder_dt(new Date());
+        order.setRequest((String)m.get("request"));
+        order.setMember(memberRepository.findMemberByUsername((String)m.get("username")));
+        ArrayList<Integer> menuone =(ArrayList<Integer>)((Map<String, Object>)m.get("orderList")).get("menu1");
+        //ArrayList<Integer> menutwo =(ArrayList<Integer>)((Map<String, Object>)m.get("orderList")).get("menu2");
+        //ArrayList<Integer> menuthree =(ArrayList<Integer>)((Map<String, Object>)m.get("orderList")).get("menu3");
+        order.setMenu1(menuone.get(0));
+        order.setQuantity1(menuone.get(1));
+        order.setPrice1(menuone.get(2));
+        order.setTotalPrice((Integer)m.get("totalPrice"));
+        System.out.println(m);
+
+        orderRepository.save(order);
+        String s = Integer.toString((Integer)m.get("storeId"));
+        messagingTemplate.convertAndSend("/topic/"+s, order);
+    }
+
+    @GetMapping(path="/order/{storeId}")
+    public Map<String, Object> getOrder(@PathVariable Integer storeId) {
+        Map<String, Object> map = new HashMap<>();
+        List<Ordering> o = orderRepository.findOrderingsByStore_StoreId(storeId);
+        map.put("errorCode", 10);
+        map.put("store", o);
+        return map;
+    }
+
+
+
+    //MENU
 
     @PostMapping(value = "/menu/upload")
     public Map<String, Object> upload(@RequestParam("storename") String storename, @RequestParam("file") MultipartFile multipartFile,
@@ -156,12 +206,13 @@ public class MainController {
 
 
     @GetMapping(path="/menu/{menuId}")
-    public Map<String, Object> getMenu(@PathVariable Long menuId) {
+    public Map<String, Object> getMenu(@PathVariable Integer menuId) {
         Map<String, Object> map = new HashMap<>();
         Menu m = menuRepository.findByMenuId(menuId);
         map.put("errorCode", 10);
         map.put("menu", m);
         return map;
     }
+
 
 }

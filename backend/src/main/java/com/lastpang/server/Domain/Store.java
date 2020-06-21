@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long storeId;
+    private Integer storeId;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false, updatable = false)

@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long menuId;
+    private Integer menuId;
 
     @ManyToOne
     @JoinColumn(name = "storeId", nullable = false, updatable = false)
@@ -20,5 +20,6 @@ public class Menu {
     private Integer price;
     private String description;
     private String options;
+
 
 }

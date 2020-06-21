@@ -9,8 +9,8 @@ import java.util.List;
 @Repository
 public interface StoreRepository extends CrudRepository<Store, Long> {
 
-    List<Store> findStoresByMember_UserId(Long UserId);
+    List<Store> findStoresByMember_UserId(Integer UserId);
     List<Store> findStoresByMember_Username(String username);
-    Store findStoreByStoreId (Long storeId);
+    Store findStoreByStoreId (Integer storeId);
     Store findStoreByStoreName(String storeName);
 }

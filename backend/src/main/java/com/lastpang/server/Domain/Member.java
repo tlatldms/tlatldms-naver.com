@@ -12,7 +12,7 @@ import java.util.Date;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long userId;
+    private Integer userId;
 
 
     @Column(nullable=false, unique=true, length=20)
