@@ -1,0 +1,36 @@
+.logo {
+    height: 3.5rem;
+    background-color: #212529;
+    width: 100vw;
+    line-height: 3.5rem;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: left;
+}
+
+.header {
+    background: #343a40;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.item {
+    text-align: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    display: table-cell;
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.item:hover {
+    background: #46464685;
+}
+
+.item:active, .item.active {
+    background: rgb(0, 0, 0);
+    color: #ffffff;
+}
