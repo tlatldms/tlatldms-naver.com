@@ -1,18 +1,21 @@
 import React, { Component } from "react";
 
-const URL = "http://localhost:8080/auth/login";
-
-class Order extends Component {
-  render() {
+const Order = props => {
+  if (props.order) {
     return (
-      <div class="row">
-        <div class="cell">Vincent Williamson</div>
-        <div class="cell">31</div>
-        <div class="cell">iOS Developer</div>
-        <div class="cell">Washington</div>
+      <div className="row">
+        <div className="cell"> {props.order.member.username} </div>
+        <div className="cell">{props.order.menu1}</div>
+        <div className="cell">{props.order.totalPrice}</div>
+        <div className="cell">{props.order.order_dt}</div>
+        <div className="cell">
+          {props.order.orderStatus == 0 ? "대기중" : "완료"}
+        </div>
       </div>
     );
+  } else {
+    return <div></div>;
   }
-}
+};
 
 export default Order;

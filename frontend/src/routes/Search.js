@@ -3,6 +3,7 @@ import OrderComp from "./OrderComp";
 import { Client } from "@stomp/stompjs";
 import Modal from "react-modal";
 import Popup from "./Popup";
+import Axios from "axios";
 
 const customStyles = {
   content: {
@@ -15,9 +16,23 @@ const customStyles = {
   }
 };
 Modal.setAppElement(document.getElementById("forModal"));
-const ip = "ws://localhost:8080";
+const ip = "ws://54.180.99.61:8080";
 const Search = ({ location }) => {
+  const [nowOrder, setNowOrder] = React.useState();
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [Orders, setOrders] = React.useState();
+  const [exam, setexam] = React.useState(1);
+  const getOrders = async () => {
+    const URL = "http://54.180.99.61:8080/order/2";
+    try {
+      const data = await Axios.get(URL).then(res => res.data);
+      setOrders(data.store);
+      //console.log(data.store);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const openModal = () => {
     setIsOpen(true);
   };
@@ -32,25 +47,27 @@ const Search = ({ location }) => {
   let conn = null;
 
   useEffect(() => {
+    getOrders();
     conn = new Client();
     conn.configure({
       brokerURL: `${ip}/wscn/websocket`,
       onConnect: e => {
-        console.log("connect success! \n" + e);
+        //console.log("connect success! \n" + e);
         conn.subscribe(`/topic/2`, message => {
-          console.log(message);
           var datas = JSON.parse(message.body);
+          setNowOrder(datas);
+          //console.log(datas);
           setIsOpen(true);
         });
       },
       onDisconnect: e => {
         console.log("disconnected");
-      },
+      }
 
       // Helps during debugging, remove in production
-      debug: str => {
-        console.log(new Date(), str);
-      }
+      // debug: str => {
+      //   console.log(new Date(), str);
+      // }
     });
 
     conn.activate();
@@ -65,20 +82,26 @@ const Search = ({ location }) => {
         onRequestClose={closeModal}
       >
         {/* <button onClick={closeModal}>close</button> */}
-        <Popup />
+        <Popup order={nowOrder} />
       </Modal>
 
       {/* {new URLSearchParams(location.search).get("keyword")} 검색 */}
-      <div class="limiter">
-        <div class="container-table100">
-          <div class="wrap-table100">
-            <div class="table">
-              <div class="row header">
-                <div class="cell">Full Name</div>
-                <div class="cell">Age</div>
-                <div class="cell">Job Title</div>
-                <div class="cell">Location</div>
+      <div className="limiter">
+        <div className="container-table100">
+          <div className="wrap-table100">
+            <div className="table">
+              <div className="row header">
+                <div className="cell">주문자</div>
+                <div className="cell">품목</div>
+                <div className="cell">총 금액</div>
+                <div className="cell">주문 시간</div>
+                <div className="cell">주문 상태</div>
               </div>
+              {Orders
+                ? Array.from(Orders).map(x => {
+                    return <OrderComp order={x} />;
+                  })
+                : null}
               <OrderComp />
             </div>
           </div>
