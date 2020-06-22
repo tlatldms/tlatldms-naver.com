@@ -139,15 +139,11 @@ public class MainController {
         order.setRequest((String)m.get("request"));
         order.setMember(memberRepository.findMemberByUsername((String)m.get("username")));
         ArrayList<Object> menuone =(ArrayList<Object>)((Map<String, Object>)m.get("orderList")).get("menu1");
-        ArrayList<Object> menutwo=(ArrayList<Object>)((Map<String, Object>)m.get("orderList")).get("menu2");
 
         order.setMenu1((String)menuone.get(0));
         order.setQuantity1((Integer)menuone.get(1));
         order.setPrice1((Integer)menuone.get(2));
 
-        order.setMenu2((String)menutwo.get(0));
-        order.setQuantity2((Integer)menutwo.get(1));
-        order.setPrice2((Integer)menutwo.get(2));
 
         order.setTotalPrice((Integer)m.get("totalPrice"));
         System.out.println(m);
