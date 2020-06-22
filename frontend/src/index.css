@@ -58,7 +58,8 @@ li {
 /* ------------------------------------ */
 input {
   display: block;
-  outline: none;
+  height: 30px;
+  width: 300px;
   border: none !important;
 }
 
@@ -76,7 +77,10 @@ input:focus {
 button {
   outline: none !important;
   border: none;
-  background: transparent;
+  padding: 10px;
+  text-align: center;
+  background: rgb(68, 27, 129);
+  color: white;
 }
 
 button:hover {
@@ -275,4 +279,20 @@ iframe {
 
 .modal-box {
   text-align: center;
+}
+
+.menu-img {
+  width: 350px;
+  height: 250px;
+}
+
+.menu-card {
+  margin: 20px;
+}
+.menu-upload-box {
+  margin: 20px;
+}
+
+.register-store {
+  margin: 20px;
 }
