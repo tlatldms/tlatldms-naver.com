@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Component } from "react";
+import Axios from "axios";
 
 const Popup = order => {
   useEffect(() => {
@@ -17,7 +18,9 @@ const Popup = order => {
       주문 시간: {order.order.order_dt}
       <br />총 {order.order.totalPrice} 원
       <br />
-      <button className="modalBtn">접수 완료</button>
+      <button className="modalBtn" onClick={order.fun}>
+        접수 완료
+      </button>
     </div>
   );
 };

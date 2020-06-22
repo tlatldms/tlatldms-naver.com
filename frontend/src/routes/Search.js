@@ -56,6 +56,7 @@ const Search = ({ location }) => {
         conn.subscribe(`/topic/2`, message => {
           var datas = JSON.parse(message.body);
           setNowOrder(datas);
+          getOrders();
           //console.log(datas);
           setIsOpen(true);
         });
@@ -82,7 +83,7 @@ const Search = ({ location }) => {
         onRequestClose={closeModal}
       >
         {/* <button onClick={closeModal}>close</button> */}
-        <Popup order={nowOrder} />
+        <Popup order={nowOrder} fun={closeModal} />
       </Modal>
 
       {/* {new URLSearchParams(location.search).get("keyword")} 검색 */}
